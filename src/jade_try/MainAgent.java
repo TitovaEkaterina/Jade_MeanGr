@@ -18,17 +18,17 @@ import java.util.Random;
 
 /**
  *
- * @author boyko_mihail
+ * @author titova_ekaterina
  */
-public class ResourceAgent extends Agent {
+public class MainAgent extends Agent {
 
     protected void setup() {
         addBehaviour(new SimpleBehaviour(this) {
 
             public void action() {
                 ACLMessage msgNew = new ACLMessage(ACLMessage.INFORM);
-                msgNew.setOntology("MessAboutMean");
-                msgNew.setContent(getLocalName() + ",0,0,"+new Random().nextDouble());
+                msgNew.setOntology("Mess");
+                msgNew.setContent(getLocalName() + ",0,0," + new Random().nextDouble());
                 msgNew.addReceiver(new AID("1@localhost:1099/JADE"));
                 send(msgNew);
                 addBehaviour(new CyclicBehaviour(this.myAgent) {
@@ -36,15 +36,15 @@ public class ResourceAgent extends Agent {
                     @Override
                     public void action() {
                         MessageTemplate m1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-                        MessageTemplate m2 = MessageTemplate.MatchOntology("BackMessAboutMean");
+                        MessageTemplate m2 = MessageTemplate.MatchOntology("BackMess");
                         MessageTemplate m3 = MessageTemplate.and(m1, m2);
                         ACLMessage msg = blockingReceive(m3, 1200);
                         if (msg != null) {
                             System.out.println(getLocalName() + ": back message from " + msg.getSender().getLocalName() + " was received ");
                             String[] content = msg.getContent().split(",");
-                             System.out.println("summ = " + Double.parseDouble(content[1]));
-                              System.out.println("count = " + Double.parseDouble(content[2]) );
-                            System.out.println("Mean = " + Double.parseDouble(content[1]) /Double.parseDouble(content[2]) );
+                            System.out.println("S = " + Double.parseDouble(content[1]));
+                            System.out.println("C = " + Double.parseDouble(content[2]));
+                            System.out.println("M = " + Double.parseDouble(content[1]) / Double.parseDouble(content[2]));
                         }
                     }
                 });
